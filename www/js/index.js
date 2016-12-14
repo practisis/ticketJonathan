@@ -446,6 +446,6 @@ function cedulaManual(){
 	});
 }
 
-setInterval(bajardatos, 60000);
-setInterval(subirdatos, 90000);
-setInterval(subirauditoria, 60000);
+//setInterval(bajardatos, 60000);
+//setInterval(subirdatos, 90000);
+//setInterval(subirauditoria, 60000);
