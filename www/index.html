@@ -24,7 +24,7 @@
 							<span class="input-group-addon" id="basic-addon1">
 								<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 							</span>
-							<input type="text" class="form-control" placeholder="Nombre de Usuario" aria-describedby="basic-addon1" id="username">
+							<input type="text" class="form-control" placeholder="Usuario" aria-describedby="basic-addon1" id="username" />
 						</div>
 					</div>
 				</div>
@@ -32,20 +32,17 @@
 					<div class="col-lg-12">
 						<div class="input-group">
 							<span class="input-group-addon" id="basic-addon1">
-								<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+								<span class="glyphicon glyphicon-oil" aria-hidden="true"></span>
 							</span>
-							<input type="password" class="form-control" placeholder="**********" aria-describedby="basic-addon1" id="pass">
-							<span class="input-group-addon">
-								<span style="cursor:pointer;" onclick="mostrarpass()" id="mostrar" class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-								<span style="cursor:pointer; display:none;" onclick="mostrarpass()" id="ocultar" class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-							</span>
+							<input type="number" class="form-control" placeholder="Ingrese id de evento ej : 49" aria-describedby="basic-addon1" id="id_con" />
+							
 						</div>
 					</div>
 				</div>
 				<div class="row" style="margin-top:25px; text-align:center;" id="botones">
 					<div class="col-lg-12" style="vertical-align:middle;">
 						<button class="btn btn-default" type="button">Cancelar</button>
-						<button class="btn btn-primary" type="button" onclick="login()">Ingresar</button>
+						<button class="btn btn-primary" type="button" onclick="valida_log_acceso()">Ingresar</button>
 					</div>
 				</div>
 				<div class="row" style="margin-top:25px; display:none;" id="loading">
@@ -76,8 +73,58 @@
 					</div>
 				</div>
 			</div>
-			<div id="boletos" style="display:block;background-color:red;min-height:100px;"></div>
+			<div id="boletos" style="display:block;"></div>
 		</div>
+		<script>
+			function valida_log_acceso(){
+				var username = $('#username').val();
+				var id_con = $('#id_con').val();
+				
+				if(username == ''){
+					alert('ingrese su usuario');
+				}
+				
+				if(id_con == ''){
+					alert('ingrese el identificador del evento');
+				}
+				
+				if(username == '' || id_con == ''){
+					
+				}else{
+					$.post("http://www.lcodigo.com/ticket/apiMovil/baja_localidadades.php",{ 
+						id_con : id_con
+					}).done(function(data){
+						//alert(data);
+						if($.trim(data)=='error'){
+							alert('no hay datos para ese evento : ' + id_con)
+						}else{
+							var res = data.split("|"); 
+							//alert(res[1]);
+							var objDatos=JSON.parse(res[0]);
+							var locales=objDatos.Localidades;
+							alert(locales.length);
+							var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
+							db.transaction(function(tx){
+								for(i=0; i < locales.length; i++){
+									var idLocalidad = locales[i].idLocalidad; 
+									var strDescripcionL = locales[i].strDescripcionL;
+									
+									tx.executeSql("INSERT OR IGNORE INTO localidad (id_con,id_loc,nombre) VALUES (?,?,?)",[id_con,idLocalidad,strDescripcionL]);
+								
+									tx.executeSql('UPDATE localidad SET id_loc = ?,nombre= ? WHERE id_loc = ?;',[idLocalidad,strDescripcionL,idLocalidad]);
+									
+								}
+									tx.executeSql("INSERT INTO concieto (id_con,nombre_c) VALUES (?,?)",[id_con,res[1]]);
+							},errorCB,successCB);
+							alert("Datos descargado con éxito.");
+							window.location = 'subpages/ingreso.html';
+						}
+					}).fail(function(xhr, status, error) {
+						alert(status);
+					});	
+				}
+			}
+		</script>
 		<!--<div id="control" style="display:none;">
 			<div class="row">
 				<div class="col-lg-3">
