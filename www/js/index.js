@@ -14,6 +14,8 @@ function iniciaDB(tx){
 	// tx.executeSql('DROP TABLE IF EXISTS Usuario');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS Usuario (id integer primary key AUTOINCREMENT,idUsuario integer, strNombreU text, strMailU text, strContrasena text, strCedula text,strPerfil text,nombreHISB text,strEstadoU text)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS auditoria (id integer primary key AUTOINCREMENT,idBoleto integer, estado text, fecha text)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS concieto (id integer primary key AUTOINCREMENT,id_con integer , nombre_c text)');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS localidad (id integer primary key AUTOINCREMENT,id_con integer,id_loc integer , nombre text)');
 	
 	
 }
@@ -25,12 +27,6 @@ function errorCB(err){
 function successCB() {
 	console.log("success!");
 }
-
-$(document).keypress(function(e){
-	if(e.which == 13){
-		login();
-	}
-});
 
 function login(){
 	/*var username = $('#username').val();
@@ -79,7 +75,7 @@ function login(){
 				$('#boletos').html(content);
 				var idurl = 1;
 				// insertarDatos(idurl);*/
-				window.location='subpages/ingreso.html'
+				window.location='subpages/ingreso.html';
 			/*}else{
 				setTimeout("$('#alerta').modal('show'); $('#username').val(''); $('#pass').val(''); $('#loading').fadeOut('slow'); $('#botones').delay(600).fadeIn('slow');",3000);
 			}
@@ -148,13 +144,15 @@ function insertarDatos(idurl){
 }
 
 function validarBoleto(e){
-	if(e.which == 13){
+	console.log(e.keyCode);
+	if(e.keyCode == 13){
 		validarIngreso();
 	}
 }
 
 function validarBoletocodigo(e){
-	if(e.which == 13){
+	console.log(e.keyCode);
+	if(e.keyCode == 13){
 		validarIngresocodigo();
 	}
 }
@@ -199,6 +197,10 @@ function validarIngresocodigo(){
 						$('#mensaje').html('El Boleto  ' +  codigo  + '  NO PUEDE INGRESAR AL CONCIERTO YA QUE NO ESTA CANJEADO POR EL REAL Y DEBE CANJEARLO');
 						$('#nombre').html(row.nombreHISB);
 						$('#sms').modal('show');
+						setTimeout(function(){
+							//alert("Boom!");
+							location.reload();
+						}, 1000);
 						//window.location = '';
 					}else{
 						if(estado == "A"){
@@ -223,6 +225,10 @@ function validarIngresocodigo(){
 								});                
 							},errorCB,successCB);
 							$('#sms').modal('show');
+							setTimeout(function(){
+								//alert("Boom!");
+								location.reload();
+							}, 1000);
 						}else{
 							// alert('ya usado');
 							var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
@@ -233,9 +239,13 @@ function validarIngresocodigo(){
 							},errorCB,successCB);
 							$('.smsback').css('background-color','#C51D34');
 							$('#titlemodal').html('Boleto Correcto!');
-							$('#mensaje').html('BOLETO YA USADO!');
+							$('#mensaje').html('BOLETO YA USADO!!!!');
 							$('#nombre').html(row.nombreHISB);
 							$('#sms').modal('show');
+							setTimeout(function(){
+								//alert("Boom!");
+								location.reload();
+							}, 1000);
 						}
 					}
 				}else{
@@ -243,12 +253,27 @@ function validarIngresocodigo(){
 					$('#titlemodal').html('Boleto Incorrecto!');
 					$('#mensaje').html('Datos Incorrectos!');
 					$('#sms').modal('show');
+					setTimeout(function(){
+						//alert("Boom!");
+						location.reload();
+					}, 1000);
 				}
 				$('#waitvalidar').fadeOut('slow');
 				$('#btnvalidar').delay(600).fadeIn('slow');
 			});
 		},errorCB,successCB);
-		setTimeout("$('.smsback').css('background-color','#fff'); $('#titlemodal').html(''); $('#mensaje').html(''); $('#nombre').html(''); $('#sms').modal('hide'); $('#onlycodigo').val(''); $('#codigo').focus();",8000);
+		setTimeout(function(){
+				$('.smsback').css('background-color','#fff');
+				$('#titlemodal').html('');
+				$('#mensaje').html('');
+				$('#nombre').html('');
+				$('#sms').modal('hide');
+				$('#onlycodigo').val('');
+				$('#codigo').focus();
+				$('#onlycodigo').focus();
+		},1000);
+		//$('#onlycodigo').focus();
+		
 	}
 }
 
@@ -278,7 +303,10 @@ function validarIngreso(){
 						$('#mensaje').html('El Boleto  ' +  codigo  + '  NO PUEDE INGRESAR AL CONCIERTO YA QUE NO ESTA CANJEADO POR EL REAL Y DEBE CANJEARLO');
 						$('#nombre').html(row.nombreHISB);
 						$('#sms').modal('show');
-						//window.location = '';
+						setTimeout(function(){
+							//alert("Boom!");
+							location.reload();
+						}, 1000);
 					}else{
 						if(estado == "A"){
 							var id = row.idBoleto;
@@ -302,6 +330,10 @@ function validarIngreso(){
 								});                
 							},errorCB,successCB);
 							$('#sms').modal('show');
+							setTimeout(function(){
+								//alert("Boom!");
+								location.reload();
+							}, 1000);
 						}else{
 							var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
 							db.transaction(function(tx){
@@ -312,9 +344,13 @@ function validarIngreso(){
 							// alert('ya usado');
 							$('.smsback').css('background-color','#C51D34');
 							$('#titlemodal').html('Boleto Correcto!');
-							$('#mensaje').html('BOLETO YA USADO!');
+							$('#mensaje').html('BOLETO YA USADO!!!!!');
 							$('#nombre').html(row.nombreHISB);
 							$('#sms').modal('show');
+							setTimeout(function(){
+								//alert("Boom!");
+								location.reload();
+							}, 1000);
 						}
 					}
 				}else{
@@ -322,90 +358,123 @@ function validarIngreso(){
 					$('#titlemodal').html('Boleto Incorrecto!');
 					$('#mensaje').html('Datos Incorrectos!');
 					$('#sms').modal('show');
+					setTimeout(function(){
+					//	alert("Boom!");
+						location.reload();
+					}, 1000);
 				}
 				$('#waitvalidar').fadeOut('slow');
 				$('#btnvalidar').delay(600).fadeIn('slow');
 			});
 		},errorCB,successCB);
-		setTimeout("$('.smsback').css('background-color','#fff'); $('#titlemodal').html(''); $('#mensaje').html(''); $('#nombre').html(''); $('#sms').modal('hide'); $('#codigo').val(''); $('#cedula').val(''); $('#codigo').focus();",4500);
+		
+		setTimeout(function(){
+			$('.smsback').css('background-color','#fff'); 
+			$('#titlemodal').html(''); 
+			$('#mensaje').html(''); 
+			$('#nombre').html(''); 
+			$('#sms').modal('hide'); 
+			$('#codigo').val(''); 
+			$('#cedula').val(''); 
+			$('#codigo').focus(); 
+			$('#onlycodigo').focus();
+			
+		}, 1000);
 	}
 }
 
-
+function cerrar_pop(){
+	$('#myidconcierto').val('');
+	$('#clave_segura').val('');
+}
 function bajardatos(){
 	/*cambios Ana*/
+	console.log('entra a la funcion');
 	var idconcierto=$('#myidconcierto').val();
+	var localidad=$('#localidad').val();
 	//alert(idconcierto);
-	if(idconcierto==null||idconcierto==''||isNaN(parseInt(idconcierto))){
-		alert("Por favor ingrese un id de concierto.");
+	var clave = '321';
+	var clave_segura = $('#clave_segura').val();
+	if(clave_segura == '' || clave_segura == null ){
+		alert('no puede dejar el campo de clave vacio');
 	}else{
-		$('#myidconcierto').val('');
-		$('#popupidconcierto').modal('hide');
-		$('#btnbajar').fadeOut('slow');
-		$('#waitbajar').delay(600).fadeIn('slow');
-		$.get("http://www.lcodigo.com/ticket/apiMovil/bajarMovil.php?idconcierto="+idconcierto).done(function(response){
-			if(response != 'error'){
-				var objDatos=JSON.parse(response);
-				var misboletos=objDatos.Boletos;
-				//alert(misboletos.length);
-				var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
-				db.transaction(function(tx){
-					for(i=0; i < misboletos.length; i++){
-						var id = misboletos[i].idBoleto; 
-						var qr = misboletos[i].qr;
-						var barcode = misboletos[i].barcode;
-						var cliente = misboletos[i].cliente;
-						var concierto = misboletos[i].concierto;
-						var local = misboletos[i].local;
-						var nombre = misboletos[i].nombre;
-						var cedula = misboletos[i].cedula;
-						var estado = misboletos[i].estado;
-						var identComprador = misboletos[i].identComprador;
-						
-						tx.executeSql("INSERT OR IGNORE INTO Boleto (idBoleto,strQr,strBarcode,idCli,idCon,idLocB,nombreHISB,documentoHISB,strEstado,identComprador) VALUES (?,?,?,?,?,?,?,?,?,?)",[id,qr,barcode,cliente,concierto,local,nombre,cedula,estado,identComprador]);
-					
-						tx.executeSql('UPDATE Boleto SET identComprador = ?,strEstado= ? WHERE idBoleto = ?;',[identComprador,estado,id]);
-						
-						//alert(id+"/"+concierto);
-						/*tx.executeSql('SELECT idBoleto FROM Boleto WHERE idBoleto=?;',[id],function(tx,results){
-							var registros = results.rows.length;
-							if(registros == 0){
-								tx.executeSql('INSERT INTO Boleto (idBoleto,strQr,strBarcode,idCli,idCon,idLocB,nombreHISB,documentoHISB,strEstado,identComprador) VALUES (?,?,?,?,?,?,?,?,?,?);',[id,qr,barcode,cliente,concierto,local,nombre,cedula,estado,identComprador]);                
-							}else{
+		if(clave_segura != clave){
+			alert('La clave de acceso es erronea, revise y vuelva a ingresar');
+		}else{
+			if(idconcierto==null||idconcierto==''||isNaN(parseInt(idconcierto))){
+				alert("Por favor ingrese un id de concierto.");
+			}else{
+				console.log('entra al post 1');
+				
+				$('#popupidconcierto').modal('hide');
+				$('#btnbajar').fadeOut('slow');
+				$('#waitbajar').delay(600).fadeIn('slow');
+				console.log('entra al post');
+				$.post("http://www.lcodigo.com/ticket/apiMovil/bajarMovil_fabricio3.php",{idconcierto:idconcierto,localidad:localidad}).done(function(response){
+					if(response != 'error'){
+						var objDatos=JSON.parse(response);
+						var misboletos=objDatos.Boletos;
+						console.log(misboletos.length);
+						var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
+						db.transaction(function(tx){
+							for(i=0; i < misboletos.length; i++){
+								var id = misboletos[i].idBoleto; 
+								var barcode = misboletos[i].barcode;
+								var estado = misboletos[i].estado;
+								//var identComprador = misboletos[i].identComprador;
+								var identComprador=2;
+								
+								tx.executeSql("INSERT OR IGNORE INTO Boleto (idBoleto,strBarcode,strEstado,identComprador) VALUES (?,?,?,?)",[id,barcode,estado,identComprador]);
+							
 								tx.executeSql('UPDATE Boleto SET identComprador = ?,strEstado= ? WHERE idBoleto = ?;',[identComprador,estado,id]);
+								
+								//alert(id+"/"+concierto);
+								/*tx.executeSql('SELECT idBoleto FROM Boleto WHERE idBoleto=?;',[id],function(tx,results){
+									var registros = results.rows.length;
+									if(registros == 0){
+										tx.executeSql('INSERT INTO Boleto (idBoleto,strQr,strBarcode,idCli,idCon,idLocB,nombreHISB,documentoHISB,strEstado,identComprador) VALUES (?,?,?,?,?,?,?,?,?,?);',[id,qr,barcode,cliente,concierto,local,nombre,cedula,estado,identComprador]);                
+									}else{
+										tx.executeSql('UPDATE Boleto SET identComprador = ?,strEstado= ? WHERE idBoleto = ?;',[identComprador,estado,id]);
+									}
+								});*/
 							}
-						});*/
-					}
-				},errorCB,successCB);
-				
-				$('#waitbajar').fadeOut('slow');
-				$('#btnbajar').delay(600).fadeIn('slow');
-				
-				
-				/*var content = '<table>'
-				
-			
+						},errorCB,successCB);
+						
+						$('#waitbajar').fadeOut('slow');
+						$('#btnbajar').delay(600).fadeIn('slow');
+						alert("Datos descargado con éxito.");
+						window.location = '';
+						
+						/*var content = '<table>'
+						
 					
-					content += '<tr class="dataBoleto">\
-									<td><input type="hidden" class="id" value="'+id+'" /></td>\
-									<td><input type="hidden" class="qr" value="'+qr+'" /></td>\
-									<td><input type="hidden" class="barcode" value="'+barcode+'" /></td>\
-									<td><input type="hidden" class="cliente" value="'+cliente+'" /></td>\
-									<td><input type="hidden" class="concierto" value="'+concierto+'" /></td>\
-									<td><input type="hidden" class="local" value="'+local+'" /></td>\
-									<td><input type="hidden" class="nombre" value="'+nombre+'" /></td>\
-									<td><input type="hidden" class="cedula" value="'+cedula+'" /></td>\
-									<td><input type="hidden" class="estado" value="'+estado+'" /></td>\
-									<td><input type="hidden" class="identComprador" value="'+identComprador+'" /></td>\
-								</tr>';
-				}
-				content += '</table>';
-				
-				var idurl = 2;
-				$('#boletos').html(content);
-				insertarDatos(idurl);*/
+							
+							content += '<tr class="dataBoleto">\
+											<td><input type="hidden" class="id" value="'+id+'" /></td>\
+											<td><input type="hidden" class="qr" value="'+qr+'" /></td>\
+											<td><input type="hidden" class="barcode" value="'+barcode+'" /></td>\
+											<td><input type="hidden" class="cliente" value="'+cliente+'" /></td>\
+											<td><input type="hidden" class="concierto" value="'+concierto+'" /></td>\
+											<td><input type="hidden" class="local" value="'+local+'" /></td>\
+											<td><input type="hidden" class="nombre" value="'+nombre+'" /></td>\
+											<td><input type="hidden" class="cedula" value="'+cedula+'" /></td>\
+											<td><input type="hidden" class="estado" value="'+estado+'" /></td>\
+											<td><input type="hidden" class="identComprador" value="'+identComprador+'" /></td>\
+										</tr>';
+						}
+						content += '</table>';
+						
+						var idurl = 2;
+						$('#boletos').html(content);
+						insertarDatos(idurl);*/
+						$('#myidconcierto').val('');
+						$('#clave_segura').val('');
+					}
+				}).fail(function(xhr, status, error) {
+						console.log(status);
+				});
 			}
-		});
+		}
 	}
 }
 
@@ -414,22 +483,23 @@ function subirdatos(){
 	$('#waitsubir').delay(600).fadeIn('slow');
 	var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
 	db.transaction(function(tx){
-		tx.executeSql("SELECT idBoleto,strEstado FROM Boleto where strEstado!='A';",[],function(tx,results){
+		tx.executeSql("SELECT strBarcode,strEstado FROM Boleto where strEstado!='A';",[],function(tx,results){
 			var registros = results.rows.length;
 			var datos = '';
 			for(var i = 0; i < registros; i++){
 				var row = results.rows.item(i);
-				var id = row.idBoleto;
+				var id = row.strBarcode;
 				var estado = row.strEstado;
 				
 				datos += id +'|'+ estado +'|'+'@';
 			}
 			console.log(datos);
 			var valores = datos.substring(0,datos.length -1);
-			$.get("http://www.lcodigo.com/ticket/apiMovil/subidaMovil.php?datos="+valores).done(function(response){
+			$.post("http://www.lcodigo.com/ticket/apiMovil/subidaMovil.php", { datos:""+valores+""}).done(function(response){
 				console.log(response);
 				$('#waitsubir').fadeOut('slow');
 				$('#btnsubir').delay(600).fadeIn('slow');
+				alert("Datos actualizados con éxito.");
 			});
 		});
 	},errorCB,successCB);
@@ -480,6 +550,38 @@ function cedulaManual(){
 		},errorCB,successCB);
 	});
 }
+
+function conteo_boletos(){
+	var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
+	db.transaction(function(tx){
+		tx.executeSql("SELECT count(idBoleto) as no_vendidos ,strEstado FROM Boleto where strEstado ='A';",[],function(tx,results){
+			console.log(results);
+			// var registros_no_vendidos = results.items.length;
+			var no_vendidos  = results.rows[0].no_vendidos;
+			//var datos = '';
+			
+			$('#no_ingresados').html(no_vendidos);
+			
+		});
+	},errorCB,successCB);
+	
+	
+	
+	var db = window.openDatabase("Database", "1.0", "TicketMobile", 200000);
+	db.transaction(function(tx){
+		tx.executeSql("SELECT count(idBoleto) as vendidos ,strEstado FROM Boleto where strEstado ='I';",[],function(tx,results){
+			console.log(results);
+			// var registros_no_vendidos = results.items.length;
+			var vendidos  = results.rows[0].vendidos;
+			//var datos = '';
+			
+			$('#ingresados').html(vendidos);
+			
+		});
+	},errorCB,successCB);
+}
+
+conteo_boletos();
 
 //setInterval(bajardatos, 60000);
 //setInterval(subirdatos, 90000);
